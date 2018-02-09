@@ -1,6 +1,7 @@
 //Dependencies
   var express = require("express");
   var bodyParser = require("body-parser");
+  var path = require("path");
   var logger = require("morgan");
   var mongoose = require("mongoose");
   var axios = require("axios");
@@ -8,24 +9,22 @@
 //Models
 var db = require("./models");
 //Initializing
-  var PORT = process.env.PORT || 3000;
+  var PORT = process.env.PORT || 5000;
   var app = express();
-  // Use morgan logger for logging requests
   app.use(logger("dev"));
-  // Use body-parser for handling form submissions
   app.use(bodyParser.urlencoded({ extended: false }));
-  // Use express.static to serve the public folder as a static directory
+  app.use(bodyParser.json());
   app.use(express.static("public"));
   // By default mongoose uses callbacks for async queries, we're setting it to use promises (.then syntax) instead
-  // Connect to the Mongo DB
+// Connect to the Mongo DB
   var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper";
   mongoose.Promise = Promise;
   mongoose.connect(MONGODB_URI);
 
 //handlebars
-var exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+  var exphbs = require("express-handlebars");
+  app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+  app.set("view engine", "handlebars");
 //Functions
 
   //classes with a short description:
@@ -279,7 +278,7 @@ app.set("view engine", "handlebars");
     });
   
   //Route for rendering
-    app.get("/show",function(req, res) {
+    app.get("/",function(req, res) {
       renderPage("Classes", req, res);
     });
 //
