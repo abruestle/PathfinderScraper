@@ -84,7 +84,7 @@ app.set("view engine", "handlebars");
           upsert: true,
           new: true
         }, function() {
-        console.log("Updated database: "+ result.name);
+        //console.log("Updated database: "+ result.name);
           if(last){
             res.json("Scrape Complete");
           }
@@ -95,20 +95,45 @@ app.set("view engine", "handlebars");
       }
     }
   //general
-    function findall(collection, req, res){
+    function findall(collection, req, res, func, hbsObject){
       // Grab every document in the Classes collection
       //console.log(collection);
+      //console.log(JSON.stringify(hbsObject));
       collection.find({})
       .then(function(dbresults) {
-        // If we were able to successfully find Classes, send them back to the client
-        res.json(dbresults);
+        // If we were able to successfully find Classes, send them back to the client or send them back to be rendered
+        func(dbresults, req, res, hbsObject);
       })
       .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
+        // If an error occurred, send it to the 
+          res.json(err);
       });
     }
-
+  //Render Page
+    function renderPage(page, req, res){
+      var hbsObject = {
+        page: page
+      };
+      if(page = "Classes"){
+        hbsObject.blank = {
+          name: "newNote",
+          category: "",
+          _id: "newNote"
+        };
+        findall(db.Class, req, res, renderPage2, hbsObject);
+      }
+      
+    }
+    function renderPage2(results, req, res, hbsObject){
+      //console.log("starting rendering");
+      hbsObject.classes = results;
+      findall(db.ClassNote, req, res, renderPage3, hbsObject);
+    }
+    function renderPage3(results, req, res, hbsObject){
+      //console.log("rendering...");
+      hbsObject.notes = results;
+      res.render(hbsObject.page.toLowerCase(), hbsObject);
+    }
 // Routes
   //Route to make routes to classes from references (this way all the 3rd party classes and core classes can be gotten, even if more are made or more made from different companies)
     //So this takes a reference and spits out the most specific reference or references based on that.
@@ -177,7 +202,7 @@ app.set("view engine", "handlebars");
         }
       ];
       for(let j = 0; j < list.length; j++){
-        console.log(list[j].reference);
+        //console.log(list[j].reference);
         axios.get(list[j].fullLink).then(function(response) {
           var $ = cheerio.load(response.data);
           console.log(list[j].reference);
@@ -212,11 +237,11 @@ app.set("view engine", "handlebars");
 
   // Route for getting all Classes from the db
     app.get("/classes", function(req, res) {
-      findall(db.Class, req, res);
+      findall(db.Class, req, res, res.json);
     });
   //Route for getting all Notes from the db
     app.get("/classnotes", function(req, res) {
-      findall(db.ClassNotes, req, res);
+      findall(db.ClassNotes, req, res, res.json);
     });
   // Route for grabbing a specific Class by category and name, populate it with it's note
     app.get("/classes/:category/:name", function(req, res) {
@@ -254,16 +279,8 @@ app.set("view engine", "handlebars");
     });
   
   //Route for rendering
-    app.get("/render",function(req, res) {
-      var hbsObject;
-      hbsObject.classes = findall("db.Classes");
-      hbsObject.notes = findall("db.ClassNotes");
-      hbsObject.blank = {
-        name: "newNote",
-        category: "",
-        _id: "newNote"
-      };
-      res.render("classes", hbsObject);
+    app.get("/show",function(req, res) {
+      renderPage("Classes", req, res);
     });
 //
 
