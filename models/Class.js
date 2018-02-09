@@ -33,7 +33,7 @@ var ClassSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "ClassNote"
   }
-});
+}, { autoIndex: false });
 
 ClassSchema.index({category: 1, name: 1}, {unique: true});
 

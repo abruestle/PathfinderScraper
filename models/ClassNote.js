@@ -6,10 +6,10 @@ var Schema = mongoose.Schema;
 // Using the Schema constructor, create a new ClassNoteSchema object
 // This is similar to a Sequelize model
 var ClassNoteSchema = new Schema({
-  // `title` is of type String
+  // Name of what it is associated with
   name: String,
   category: String,
-  // `body` is of type String
+  //If later Details and Class notes are combines, we would add 'type'
   body: String
 });
 
