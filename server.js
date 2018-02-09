@@ -21,12 +21,255 @@ var db = require("./models");
   var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper";
   mongoose.Promise = Promise;
   mongoose.connect(MONGODB_URI);
+
+//handlebars
+var exphbs = require("express-handlebars");
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+//Functions
+
+  //classes with a short description:
+    function scrapePaizoShort(result, func, res, last){
+      //Find description by doing another scrape
+      var term = result.name.toLowerCase();
+      var link = "http://paizo.com/pathfinderRPG/prd/";
+      var description = "";
+      var searchterm = "p:contains('"+term+"')";
+      switch (result.category.toLowerCase().replace(" ","-")) {
+        case "core-classes":
+          link = link + "coreRulebook/classes.html";
+          break;
+        case "occult":
+          link = link + "occultAdventures/classes/index.html";
+          break;
+        case "unchained":
+          link = link + "unchained/classes/index.html";
+          term = term.replace("unchained ","");
+          searchterm = "body "+searchterm+":has(a)";
+          console.log("search term replaced");
+          break;
+          //has all classes; will implement later
+        // case "":
+        //   link = "http://karzoug.info/srd/classes/coreClasses/barbarian.htm";
+        //   searchterm = "body";
+        //   break;
+        case "base-classes":
+          link = "http://www.d20pfsrd.com/classes/base-classes/";
+          break;
+        default:
+          description = "No description found";
+      }
+
+      axios.get(link)
+      .then(function(responsedesc) {
+        var $ = cheerio.load(responsedesc.data);
+        //.clone().children().remove().end().text() for karzoug's srd.
+        result.description = $(searchterm).first().text();
+
+        func(result, res, last);
+      })
+      .catch(function(err) {
+        return res.json(err);
+      });
+    }
+
+  //deliver results to database
+    function updatedb(result, res, last){
+      //Updates class or makes a new one
+      try {
+        db.Class.findOneAndUpdate({
+          name: result.name,
+          category: result.category
+        }, result, {
+          upsert: true,
+          new: true
+        }, function() {
+        console.log("Updated database: "+ result.name);
+          if(last){
+            res.json("Scrape Complete");
+          }
+        });
+      }
+      catch (err){
+        res.json(err);
+      }
+    }
+  //general
+    function findall(collection, req, res){
+      // Grab every document in the Classes collection
+      //console.log(collection);
+      collection.find({})
+      .then(function(dbresults) {
+        // If we were able to successfully find Classes, send them back to the client
+        res.json(dbresults);
+      })
+      .catch(function(err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+    }
+
 // Routes
   //Route to make routes to classes from references (this way all the 3rd party classes and core classes can be gotten, even if more are made or more made from different companies)
     //So this takes a reference and spits out the most specific reference or references based on that.
   //Route for using reference to get class info (Name, Link, Description, Where it came from (Core, Hybrid, a specific 3rd party company, etc.), )
   //Route that takes class link and gets abilities - maybe add more later (HP, BAB, Saves...) 
-    app.get("/class/:type/:name/:link", function(req, res) {
+
+//Finished Routes
+  //Test Route for individual class description
+    app.get("/scrapebarbarian", function(req, res) {
+      var result = {
+        name: "Barbarian",
+        category: "Core Classes"
+      }
+      scrapePaizoShort(result, updatedb, res, true);
+
+    });
+
+  //Get route for scraping individual class's description
+    app.get("/scrape/:category/:class", function(req, res) {
+      var result = {
+        name: req.params.class,
+        category: req.params.category
+      }
+      scrapePaizoShort(result, updatedb, res, true);
+    });
+
+  // A GET route for scraping the core classes
+    app.get("/scrapecore", function(req, res) {
+      axios.get("http://www.d20pfsrd.com/classes/core-classes/").then(function(response) {
+        var $ = cheerio.load(response.data);
+        $("ul.ogn-childpages li").not("ul li ul li").each(function(i, element) {
+          var result = {};
+          // Add the text and href of every link, and save them as properties of the result object
+          result.name = $(this)
+            .children("a")
+            .text();
+          result.link = $(this)
+            .children("a")
+            .attr("href");
+          result.category = "Core Classes";
+          console.log(result.name);
+          if (j == list.length -1) {
+            var last = true;
+          } else {
+            var last = false;
+          }
+          scrapePaizoShort(result, updatedb, res, last);
+
+        });
+
+        // If we were able to successfully scrape and save an Class, send a message to the client
+      })
+      .catch(function(err) {
+        return res.json(err);
+      });
+    });
+
+  // A GET route for scraping a set of classes 
+    app.get("/scrape", function(req, res) {
+      //Currently just core
+      list = [
+        {
+          sourceCategory: "Core Classes",
+          fullLink: "http://www.d20pfsrd.com/classes/core-classes/",
+          reference: "ul.ogn-childpages li"
+        }
+      ];
+      for(let j = 0; j < list.length; j++){
+        console.log(list[j].reference);
+        axios.get(list[j].fullLink).then(function(response) {
+          var $ = cheerio.load(response.data);
+          console.log(list[j].reference);
+          var objects = $(list[j].reference).not("ul li ul li");
+
+          objects.each(function(i, element) {
+            var result = {};
+            // Add the text and href of every link, and save them as properties of the result object
+            result.name = $(this)
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("a")
+              .attr("href");
+            result.category = list[j].sourceCategory;
+            console.log(result.name);
+            if(j === list.length -1 && i === objects.length -1){
+              var last = true;
+            } else {
+              var last = false;
+            };
+            console.log(last);
+            scrapePaizoShort(result, updatedb, res, last);
+
+          });
+        })
+        .catch(function(err) {
+          return res.json(err);
+        });
+      }
+    });
+
+  // Route for getting all Classes from the db
+    app.get("/classes", function(req, res) {
+      findall(db.Class, req, res);
+    });
+  //Route for getting all Notes from the db
+    app.get("/classnotes", function(req, res) {
+      findall(db.ClassNotes, req, res);
+    });
+  // Route for grabbing a specific Class by category and name, populate it with it's note
+    app.get("/classes/:category/:name", function(req, res) {
+      db.Class.findOne({
+          name: req.params.class,
+          category: req.params.category
+        }).populate("notes")
+        .then(function(dbClass) {
+          res.json(dbClass);
+        })
+        .catch(function(err) {
+          res.json(err);
+        });
+    });
+
+  // Route for saving/updating an Class's associated Note
+    app.post("/classes/:category/:name", function(req, res) {
+      db.Note.create(req.body)
+        .then(function(dbNote) {
+          //Find class matching Note
+          return db.Class.findOneAndUpdate({
+            name: req.params.class,
+            category: req.params.category
+          }, {
+            //push note id
+            $push: {notes: dbNote._id}
+          }, { new: true });
+        })
+        .then(function(dbClass) {
+          res.json(dbClass);
+        })
+        .catch(function(err) {
+          res.json(err);
+        });
+    });
+  
+  //Route for rendering
+    app.get("/render",function(req, res) {
+      var hbsObject;
+      hbsObject.classes = findall("db.Classes");
+      hbsObject.notes = findall("db.ClassNotes");
+      hbsObject.blank = {
+        name: "newNote",
+        category: "",
+        _id: "newNote"
+      };
+      res.render("classes", hbsObject);
+    });
+//
+
+//Unfinished Routes
+  //Class Special Abilities
+    app.get("/details/:type/:name/:link", function(req, res) {
       request("http://www.d20pfsrd.com/classes/"+req.params.link, function(error, response, html) {
         var $ = cheerio.load(html);
         //Special abilities - once per time seen
@@ -50,7 +293,7 @@ var db = require("./models");
       });
     });
 
-  //Currently have not found a good way to get full descriptions...
+  //Full descriptions from Paizo...may have to use other way as it is a dynamic page
 
     // function scrapeDescription(category, name){
     //   //Find description by doing another scrape
@@ -66,151 +309,12 @@ var db = require("./models");
     //   });
     // }
 
-//While I am still looking for a way to get description from some site, I can at least do the paizo classes with a short description:
-  function scrapePaizoShort(result, func){
-    //Find description by doing another scrape
-    var term = result.name.toLowerCase();
-    var link = "http://paizo.com/pathfinderRPG/prd/";
-    var description = "";
-    var searchterm = "p:contains('"+term+"')";
-    switch (result.category.toLowerCase().replace(" ","-")) {
-      case "core-classes":
-        link = link + "coreRulebook/classes.html";
-        break;
-      case "occult":
-        link = link + "occultAdventures/classes/index.html";
-        break;
-      case "unchained":
-        link = link + "unchained/classes/index.html";
-        term = term.replace("unchained ","");
-        searchterm = "body "+searchterm+":has(a)";
-        console.log("search term replaced");
-        break;
-        //has all classes; will implement later
-      // case "":
-      //   link = "http://karzoug.info/srd/classes/coreClasses/barbarian.htm";
-      //   searchterm = "body";
-      //   break;
-      case "base-classes":
-        link = "http://www.d20pfsrd.com/classes/base-classes/";
-        break;
-      default:
-        description = "No description found";
-    }
 
-    axios.get(link).then(function(responsedesc) {
-      var $ = cheerio.load(responsedesc.data);
-      //.clone().children().remove().end().text() for karzoug's srd.
-      result.description = $(searchterm).first().text();
 
-      func(result);
-    });
-  }
 
-//deliver results to database
-  function updateMongo(){
-    db.Class.create(result)
-      .then(function(dbClass) {
-        console.log(dbClass);
-      })
-      .catch(function(err) {
-        return res.json(err);
-      });
-  }
+//render page
 
-//Test Route for individual class
-app.get("/scrapebarbarian", function(req, res) {
-  var result = {
-    name: "Barbarian",
-    category: "Core Classes"
-  }
-  scrapePaizoShort(result);
-
-});
-
-//description
-app.get("/scrape/:category/:class", function(req, res) {
-  var result = {
-    name: req.params.class,
-    category: req.params.category
-  }
-  scrapePaizoShort(result);
-});
-
-// A GET route for scraping
-app.get("/scrapecore", function(req, res) {
-  axios.get("http://www.d20pfsrd.com/classes/core-classes/").then(function(response) {
-    var $ = cheerio.load(response.data);
-    $("ul.ogn-childpages li").not("ul li ul li").each(function(i, element) {
-      var result = {};
-      // Add the text and href of every link, and save them as properties of the result object
-      result.name = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href").replace('http://www.d20pfsrd.com/classes/','');
-      result.category = "Core Classes";
-      console.log(result.name);
-      scrapePaizoShort(result);
-
-    });
-
-    // If we were able to successfully scrape and save an Class, send a message to the client
-    res.send("Scrape Complete");
-  });
-});
-
-// Route for getting all Classes from the db
-app.get("/classes", function(req, res) {
-  // Grab every document in the Classes collection
-  db.Class.find({})
-    .then(function(dbClass) {
-      // If we were able to successfully find Classes, send them back to the client
-      res.json(dbClass);
-    })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
-
-// Route for grabbing a specific Class by id, populate it with it's note
-app.get("/classes/:id", function(req, res) {
-  // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  db.Class.findOne({ _id: req.params.id })
-    // ..and populate all of the notes associated with it
-    .populate("note")
-    .then(function(dbClass) {
-      // If we were able to successfully find an Class with the given id, send it back to the client
-      res.json(dbClass);
-    })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
-
-// Route for saving/updating an Class's associated Note
-app.post("/classes/:id", function(req, res) {
-  // Create a new note and pass the req.body to the entry
-  db.Note.create(req.body)
-    .then(function(dbNote) {
-      // If a Note was created successfully, find one Class with an `_id` equal to `req.params.id`. Update the Class to be associated with the new Note
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Class.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
-    })
-    .then(function(dbClass) {
-      // If we were able to successfully update an Class, send it back to the client
-      res.json(dbClass);
-    })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
-
+//
 // Start the server
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");

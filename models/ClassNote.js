@@ -9,6 +9,7 @@ var ClassNoteSchema = new Schema({
   // Name of what it is associated with
   name: String,
   category: String,
+  title: String,
   //If later Details and Class notes are combines, we would add 'type'
   body: String
 });

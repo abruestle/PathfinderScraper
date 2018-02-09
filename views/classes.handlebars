@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel-group" id="resultsPanel">
+            {{#each result}}
+                {{> class-block}}
+            {{/each}}
+        </div>
+        <div class="col-md-4">
+            <p id="notes"></p>
+            {{#each notes}}
+                {{> note-block}}
+            {{/each}}
+                {{> note-block blank}}
+        </div>
+    </div>

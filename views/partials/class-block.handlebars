@@ -1,0 +1,49 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-6">
+                <a class="panel-title" data-toggle="collapse" data-parent="#resultsPanel" href="#{{category}}{{name}}panel">{{name}}</a>
+            </div>
+            <div class="col-md-6">
+                <ul class="breadcrumb">
+                    <li>
+                        Class
+                    </li>
+                    <li>
+                        {{category}}
+                    </li>
+                    <li class="active">
+                        <a href="{{link}}" target="_blank">{{name}}</a>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills pull-right">
+                    <li class="active">
+                        <a href="#">
+                            <span class="badge pull-right">{{notes.length}}</span>Notes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="{{category}}{{name}}panel" class="panel-collapse collapse">
+        <div class="panel-body">
+            <a href="{{link}}">Link</a>
+            <br> {{description}}
+            <div class="btn-group">
+                <button class="btn btn-default" type="button">Save
+                </button>
+                {{!--
+                <button class="btn btn-default" type="button">
+                    <em class="glyphicon glyphicon-align-center"></em> Center
+                </button>
+                <button class="btn btn-default" type="button">
+                    <em class="glyphicon glyphicon-align-right"></em> Right
+                </button>
+                <button class="btn btn-default" type="button">
+                    <em class="glyphicon glyphicon-align-justify"></em> Justify
+                </button> --}}
+            </div>
+        </div>
+    </div>
+</div>
