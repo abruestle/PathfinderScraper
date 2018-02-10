@@ -14,15 +14,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Miridon Hunters Game</title>
+<title>Pathfinder Scraper: {{page}}</title>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <script src="https://use.fontawesome.com/e862c45d8b.js"></script>
 <link rel="stylesheet" href="https://bootswatch.com/3/cyborg/bootstrap.css"  crossorigin="anonymous">
-<link href="/css/base_style.css" rel="stylesheet">
-<link href="/css/chat.css" rel="stylesheet">
 <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 {{!-- for adding custom css per page --}}
 {{#each css}}
@@ -62,7 +60,7 @@
         </ul>
         <div class="page-header">
             <h1>
-                Pathfinder Scraper
+                Pathfinder Scraper: {{page}}
             </h1>
         </div>
       {{{body}}}
@@ -72,13 +70,8 @@
 {{#each js}}
   <script src="{{this}}"></script>
 {{/each}}
-  <!-- <script src="/assets/js/game.js"></script> -->
-
-<!-- needed for chat -->
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-{{!-- <script src="../socket.io/socket.io.js"></script> --}}
-<script src="/js/chat.js"></script>
+<script src="./js/app.js"></script>
   
 </body>
 </html>

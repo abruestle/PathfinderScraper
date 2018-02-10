@@ -4,7 +4,7 @@
             <div class="col-sm-6">
                 <a class="panel-title" data-toggle="collapse" data-parent="#resultsPanel" href="#{{category}}{{name}}panel">{{name}}</a>
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 <ul class="breadcrumb">
                     <li>
                         Class
@@ -13,13 +13,11 @@
                         {{category}}
                     </li>
                     <li class="active">
-                        <a href="{{link}}" target="_blank">{{name}}</a>
+                        <a href="{{link}}" target="_blank"">{{name}}</a>
                     </li>
-                </ul>
-                <ul class="nav nav-pills pull-right">
-                    <li class="active">
-                        <a href="#">
-                            <span class="badge pull-right">{{notes.length}}</span>Notes
+                    <li class="active notebadge" data-id="{{name}}{{category}}">
+                        <a href="#" data-id="{{name}}{{category}}">
+                            Notes <span class="badge" data-id="{{name}}{{category}}">{{notes.length}}</span> 
                         </a>
                     </li>
                 </ul>

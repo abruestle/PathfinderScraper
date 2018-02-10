@@ -115,7 +115,7 @@ var db = require("./models");
       };
       if(page = "Classes"){
         hbsObject.blank = {
-          name: "newNote",
+          name: "new",
           category: "",
           _id: "newNote"
         };
@@ -131,6 +131,7 @@ var db = require("./models");
     function renderPage3(results, req, res, hbsObject){
       //console.log("rendering...");
       hbsObject.notes = results;
+      console.log(JSON.stringify(hbsObject, null, 2));
       res.render(hbsObject.page.toLowerCase(), hbsObject);
     }
 // Routes
@@ -144,7 +145,7 @@ var db = require("./models");
     app.get("/scrapebarbarian", function(req, res) {
       var result = {
         name: "Barbarian",
-        category: "Core Classes"
+        category: "Core-Classes"
       }
       scrapePaizoShort(result, updatedb, res, true);
 
@@ -168,11 +169,12 @@ var db = require("./models");
           // Add the text and href of every link, and save them as properties of the result object
           result.name = $(this)
             .children("a")
-            .text();
+            .text()
+            .replace(" ","-");;
           result.link = $(this)
             .children("a")
             .attr("href");
-          result.category = "Core Classes";
+          result.category = "Core-Classes";
           console.log(result.name);
           if (j == list.length -1) {
             var last = true;
@@ -195,7 +197,7 @@ var db = require("./models");
       //Currently just core
       list = [
         {
-          sourceCategory: "Core Classes",
+          sourceCategory: "Core-Classes",
           fullLink: "http://www.d20pfsrd.com/classes/core-classes/",
           reference: "ul.ogn-childpages li"
         }
@@ -212,7 +214,8 @@ var db = require("./models");
             // Add the text and href of every link, and save them as properties of the result object
             result.name = $(this)
               .children("a")
-              .text();
+              .text()
+              .replace(" ","_");
             result.link = $(this)
               .children("a")
               .attr("href");
@@ -281,7 +284,8 @@ var db = require("./models");
     app.get("/",function(req, res) {
       renderPage("Classes", req, res);
     });
-//
+//Delete
+    
 
 //Unfinished Routes
   //Class Special Abilities
@@ -327,8 +331,6 @@ var db = require("./models");
 
 
 
-
-//render page
 
 //
 // Start the server
