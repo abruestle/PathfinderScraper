@@ -16,9 +16,12 @@ $(document).on("click", ".notebadge, .notebadge a, .notebadge a span", function(
   var thisName = $(this).attr("data-name");
   // hide unseen notes; show other notes
   $(".hideablenotes").removeClass('invisible');
+  $(".deletenote").addClass('invisible');
+  $(".deletenote").removeClass('invisible');
   $(".hideablenotes").addClass('invisible');
   $(".savenote").not(".newsave").addClass('invisible');
   $("." +thisName+ thisCategory  + "note").removeClass('invisible');
+  $("." +thisName+ thisCategory  + "delete").removeClass('invisible');
   $(".newnote").removeClass('invisible');
   $(".newnote").attr("data-category", thisCategory);
   $(".newnote").attr("data-name", thisName);
@@ -26,6 +29,7 @@ $(document).on("click", ".notebadge, .notebadge a, .notebadge a span", function(
   $(".newsave").attr("data-name", thisName);
   $(".newdelete").attr("data-category", thisCategory);
   $(".newdelete").attr("data-name", thisName);
+  $(".newdelete").removeClass('invisible');
 
 });
 
@@ -42,18 +46,18 @@ $(document).on("click", ".newsave", function() {
     data: {
       // Value taken from title input
       name: thisName,
-      title: $("#titleinput" +thisName+ thisCategory).val(),
+      title: $("#inputtitlenew").val(),
       category: thisCategory,
       // Value taken from note textarea
-      body: $("#bodyinput" +thisName + thisCategory).val()
+      body: $("#inputtextnew").val()
     }
   })
     // With that done
     .then(function(data) {
       // Log the response
       console.log(data);
-      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form" data-id="{{_id}}"><div class="form-group"><input type="email" class="form-control" id="inputtitle' + thisName + '' + thisCategory + '" placeholder="Note Title" value="{{title}}" data-id="{{_id}}"/></div><div class="form-group"><input type="email" class="form-control" id="inputtext' + thisName + '' + thisCategory + '" placeholder="Note Text" value="{{body}}" data-id="{{_id}}"/></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'save savenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Save Note</button><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
-      html.insertBefore(".newnote");
+      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form"><div class="form-group"><p id="inputtitle' + thisName + '' + thisCategory + '" value="{{title}}" data-category="' + thisCategory + '" data-name="' + thisName + '">{{body}}</p></div><div class="form-group"><p id="inputbody' + thisName + '' + thisCategory + '" value="{{body}} data-category="' + thisCategory + '" data-name="' + thisName + '">{{body}}</p></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
+      html.insertAfter(".newnote");
     });
 
   // Also, remove the values entered in the input and textarea for note entry

@@ -1,0 +1,13 @@
+<form class="form-horizontal hideablenotes {{name}}{{category}}note invisible" role="form" data-id="{{_id}}">
+    <div class="form-group">
+        <p class="inputtitle{{name}}{{category}}" id="{{_id}}" value="{{title}}" data-id="{{_id}}" data-category="{{category}}" data-name="{{name}}">{{body}}</p>
+    </div>
+    <div class="form-group">
+        <p class="inputbody{{name}}{{category}}" id="{{_id}}" value="{{body}}" data-id="{{_id}}" data-category="{{category}}" data-name="{{name}}">{{body}}</p>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-default {{name}}{{category}}delete deletenote invisible" id="{{_id}}" type="button"  data-category="{{category}}" data-name="{{name}}">Delete Note
+        </button>
+    </div>
+</form>
