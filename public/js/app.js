@@ -70,7 +70,7 @@ $(document).on("click", ".newsave", function() {
 });
 
 
-// When you click the savenote button
+// When you click the deletenote button
 $(document).on("click", ".deletenote:not(.newdelete)", function() {
   // Grab the id associated with the class from the submit button
   var thisCategory = $(this).attr("data-category");
@@ -97,4 +97,10 @@ $(document).on("click", ".deletenote:not(.newdelete)", function() {
     });
 
  $('#'+thisId+'NoteBlock').remove();
+});
+
+// When you click the deletenote button on new button
+$(document).on("click", ".newdelete", function() {
+  $('#inputtitlenew').val('');
+  $('#inputtextnew').val('');
 });
