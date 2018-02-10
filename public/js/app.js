@@ -8,71 +8,55 @@
 // });
 
 
-// Whenever someone clicks a p tag
+// Whenever someone clicks a note
 $(document).on("click", ".notebadge, .notebadge a, .notebadge a span", function() {
   event.preventDefault();
-  // Empty the notes from the note section
+  // Save the data
+  var thisCategory = $(this).attr("data-category");
+  var thisName = $(this).attr("data-name");
+  // hide unseen notes; show other notes
   $(".hideablenotes").removeClass('invisible');
   $(".hideablenotes").addClass('invisible');
-  
-  // Save the id from the p tag
-  var thisId = $(this).attr("data-id");
-
-  $("." + thisId + "note").removeClass('invisible');
+  $(".savenote").not(".newsave").addClass('invisible');
+  $("." +thisName+ thisCategory  + "note").removeClass('invisible');
   $(".newnote").removeClass('invisible');
-// // Now make an ajax call for the Class
+  $(".newnote").attr("data-category", thisCategory);
+  $(".newnote").attr("data-name", thisName);
+  $(".newsave").attr("data-category", thisCategory);
+  $(".newsave").attr("data-name", thisName);
+  $(".newdelete").attr("data-category", thisCategory);
+  $(".newdelete").attr("data-name", thisName);
 
-// $.ajax({
-//   method: "GET",
-//   url: "/classes/" + thisId
-// })
-    // With that done, add the note information to the page
-    // .then(function(data) {
-    //   console.log(data);
-    //   // The title of the class
-    //   $("#notes").append("<h2>" + data.title + "</h2>");
-    //   // An input to enter a new title
-    //   $("#notes").append("<input id='titleinput' name='title' >");
-    //   // A textarea to add a new note body
-    //   $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-    //   // A button to submit a new note, with the id of the class saved to it
-    //   $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-    //   // If there's a note in the class
-    //   if (data.note) {
-    //     // Place the title of the note in the title input
-    //     $("#titleinput").val(data.note.title);
-    //     // Place the body of the note in the body textarea
-    //     $("#bodyinput").val(data.note.body);
-    //   }
-    // });
 });
 
 // When you click the savenote button
-$(document).on("click", ".savenote", function() {
+$(document).on("click", ".newsave", function() {
   // Grab the id associated with the class from the submit button
-  var thisId = $(this).attr("data-id");
+  var thisCategory = $(this).attr("data-category");
+  var thisName = $(this).attr("data-name");
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
-    url: "/classes/" + thisId,
+    url: "/classes/" + thisCategory + "/" + thisName,
     data: {
       // Value taken from title input
-      title: $("#titleinput").val(),
+      name: thisName,
+      title: $("#titleinput" +thisName+ thisCategory).val(),
+      category: thisCategory,
       // Value taken from note textarea
-      body: $("#bodyinput").val()
+      body: $("#bodyinput" +thisName + thisCategory).val()
     }
   })
     // With that done
     .then(function(data) {
       // Log the response
       console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
+      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form" data-id="{{_id}}"><div class="form-group"><input type="email" class="form-control" id="inputtitle' + thisName + '' + thisCategory + '" placeholder="Note Title" value="{{title}}" data-id="{{_id}}"/></div><div class="form-group"><input type="email" class="form-control" id="inputtext' + thisName + '' + thisCategory + '" placeholder="Note Text" value="{{body}}" data-id="{{_id}}"/></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'save savenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Save Note</button><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
+      html.insertBefore(".newnote");
     });
 
   // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
-  $("#bodyinput").val("");
+  $("#titleinput" +thisName+ thisCategory).val("");
+  $("#bodyinput" +thisName+ thisCategory).val("");
 });

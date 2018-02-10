@@ -261,11 +261,12 @@ var db = require("./models");
 
   // Route for saving/updating an Class's associated Note
     app.post("/classes/:category/:name", function(req, res) {
-      db.Note.create(req.body)
+      console.log(JSON.stringify(req.body));
+      db.ClassNote.create(req.body)
         .then(function(dbNote) {
           //Find class matching Note
           return db.Class.findOneAndUpdate({
-            name: req.params.class,
+            name: req.params.name,
             category: req.params.category
           }, {
             //push note id

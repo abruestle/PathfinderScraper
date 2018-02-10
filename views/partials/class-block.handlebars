@@ -13,11 +13,12 @@
                         {{category}}
                     </li>
                     <li class="active">
-                        <a href="{{link}}" target="_blank"">{{name}}</a>
+                        <a href="{{link}}" target="_blank">{{name}}</a>
                     </li>
-                    <li class="active notebadge" data-id="{{name}}{{category}}">
-                        <a href="#" data-id="{{name}}{{category}}">
-                            Notes <span class="badge" data-id="{{name}}{{category}}">{{notes.length}}</span> 
+                    <li class="active notebadge" data-category="{{category}}" data-name="{{name}}">
+                        <a href="#" data-category="{{category}}" data-name="{{name}}">
+                            {{!-- Notes <span class="badge" data-category="{{category}}" data-name="{{name}}">{{notes.length}}
+                            </span>  --}}
                         </a>
                     </li>
                 </ul>

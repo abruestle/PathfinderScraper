@@ -1,16 +1,16 @@
 
 <form class="form-horizontal hideablenotes {{name}}{{category}}note invisible" role="form" data-id="{{_id}}">
     <div class="form-group">
-        <input type="email" class="form-control" id="inputtitle{{_id}}" placeholder="Note Title" value="{{title}}" data-id="{{_id}}"/>
+        <input type="email" class="form-control" id="inputtitle{{name}}{{category}}" placeholder="Note Title" value="{{title}}" data-id="{{_id}}"/>
     </div>
     <div class="form-group">
-        <input type="email" class="form-control" id="inputtext{{_id}}" placeholder="Note Text" value="{{body}}" data-id="{{_id}}"/>
+        <input type="email" class="form-control" id="inputtext{{name}}{{category}}" placeholder="Note Text" value="{{body}}" data-id="{{_id}}"/>
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-default" type="button" class="savenote" data-id="{{_id}}">Save Note
+        <button class="btn btn-default {{name}}{{category}}save savenote" type="button"  data-category="{{category}}" data-name="{{name}}">Save Note
         </button>
-        <button class="btn btn-default" type="button" class="deletenote" data-id="{{_id}}">Delete Note
+        <button class="btn btn-default {{name}}{{category}}delete deletenote" type="button"  data-category="{{category}}" data-name="{{name}}">Delete Note
         </button>
     </div>
 </form>
