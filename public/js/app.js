@@ -106,9 +106,18 @@ $(document).on("click", ".newdelete", function() {
   $('#inputtextnew').val('');
 });
 
-// When you click the deletenote button on new button
+// // When you click the deletenote button on new button
+// $(document).on("click", ".panel-heading", function() {
+//   thisLink = $(' div div .panel-title', this).attr('href');
+//   console.log(thisLink);
+//   //$('.in').collapse("toggle");
+//   thisLink.toggle();
+// });
+
+// toggle collapse with header
 $(document).on("click", ".panel-heading", function() {
-  thisLink = $(this + ' div div .panel-title').attr('href');
+  thisLink = $(' div div .panel-title', this).attr('data-target');
   console.log(thisLink);
-  thisLink.collapse("toggle");
+  //$('.in').collapse("toggle");
+  thisLink.toggle();
 });
