@@ -30,6 +30,7 @@ $(document).on("click", ".notebadge, .notebadge a, .notebadge a span", function(
   $(".newdelete").attr("data-category", thisCategory);
   $(".newdelete").attr("data-name", thisName);
   $(".newdelete").removeClass('collapse');
+  $("#newnote")[0].scrollIntoView();
 
 });
 
