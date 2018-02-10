@@ -38,6 +38,8 @@ $(document).on("click", ".newsave", function() {
   // Grab the id associated with the class from the submit button
   var thisCategory = $(this).attr("data-category");
   var thisName = $(this).attr("data-name");
+  var thisTitle = $("#inputtitlenew").val();
+  var thisBody = $("#inputtextnew").val();
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
@@ -46,21 +48,23 @@ $(document).on("click", ".newsave", function() {
     data: {
       // Value taken from title input
       name: thisName,
-      title: $("#inputtitlenew").val(),
+      title: thisTitle,
       category: thisCategory,
       // Value taken from note textarea
-      body: $("#inputtextnew").val()
+      body: thisBody
     }
   })
     // With that done
     .then(function(data) {
       // Log the response
+      console.log("Response:");
       console.log(data);
-      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form"><div class="form-group"><p id="inputtitle' + thisName + '' + thisCategory + '" value="{{title}}" data-category="' + thisCategory + '" data-name="' + thisName + '">{{body}}</p></div><div class="form-group"><p id="inputbody' + thisName + '' + thisCategory + '" value="{{body}} data-category="' + thisCategory + '" data-name="' + thisName + '">{{body}}</p></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
-      html.insertAfter(".newnote");
+      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form"><div class="form-group"><p id="' + thisTitle + thisName + '' + thisCategory + '" value="' + thisTitle + '" data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisTitle + '</p></div><div class="form-group"><p id="inputbody' + thisName + '' + thisCategory + '" value="' + thisBody + ' data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisBody + '</p></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
+      $(html).insertAfter(".newnote");
+      // Also, remove the values entered in the input and textarea for note entry
+    $("#titleinput" +thisName+ thisCategory).val("");
+    $("#bodyinput" +thisName+ thisCategory).val("");
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput" +thisName+ thisCategory).val("");
-  $("#bodyinput" +thisName+ thisCategory).val("");
+ 
 });
