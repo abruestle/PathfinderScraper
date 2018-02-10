@@ -15,21 +15,21 @@ $(document).on("click", ".notebadge, .notebadge a, .notebadge a span", function(
   var thisCategory = $(this).attr("data-category");
   var thisName = $(this).attr("data-name");
   // hide unseen notes; show other notes
-  $(".hideablenotes").removeClass('invisible');
-  $(".deletenote").addClass('invisible');
-  $(".deletenote").removeClass('invisible');
-  $(".hideablenotes").addClass('invisible');
-  $(".savenote").not(".newsave").addClass('invisible');
-  $("." +thisName+ thisCategory  + "note").removeClass('invisible');
-  $("." +thisName+ thisCategory  + "delete").removeClass('invisible');
-  $(".newnote").removeClass('invisible');
+  $(".hideablenotes").removeClass('collapse');
+  $(".deletenote").addClass('collapse');
+  $(".deletenote").removeClass('collapse');
+  $(".hideablenotes").addClass('collapse');
+  $(".savenote").not(".newsave").addClass('collapse');
+  $("." +thisName+ thisCategory  + "note").removeClass('collapse');
+  $("." +thisName+ thisCategory  + "delete").removeClass('collapse');
+  $(".newnote").removeClass('collapse');
   $(".newnote").attr("data-category", thisCategory);
   $(".newnote").attr("data-name", thisName);
   $(".newsave").attr("data-category", thisCategory);
   $(".newsave").attr("data-name", thisName);
   $(".newdelete").attr("data-category", thisCategory);
   $(".newdelete").attr("data-name", thisName);
-  $(".newdelete").removeClass('invisible');
+  $(".newdelete").removeClass('collapse');
 
 });
 
