@@ -200,6 +200,11 @@ var db = require("./models");
           sourceCategory: "Core-Classes",
           fullLink: "http://www.d20pfsrd.com/classes/core-classes/",
           reference: "ul.ogn-childpages li"
+        },
+        {
+          sourceCategory: "Base-Classes",
+          fullLink: "https://www.d20pfsrd.com/classes/base-classes/",
+          reference: "ul.ogn-childpages li"
         }
       ];
       for(let j = 0; j < list.length; j++){
