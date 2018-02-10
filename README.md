@@ -22,6 +22,13 @@ This will be only Pathfinder, not 3.5 for now.
 
 The current scraper is going to cover the basics of looking through classes and special abilities for classes. This uses Mongoose and MongoDB to hold onto class information and references to classes, as well as any player-made notes.
 
+## To Use
+
+* Click on Notes on top right of panel to show current notes or add one
+* click name of class on left to show description
+* Save or Delete with Buttons
+* Link to Class on SRD at top of description or by clicking name in top right
+
 ### NPM Packages used
 
 * Express
