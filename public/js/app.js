@@ -59,7 +59,7 @@ $(document).on("click", ".newsave", function() {
       // Log the response
       console.log("Response:");
       console.log(data);
-      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form"><div class="form-group"><p id="' + thisTitle + thisName + '' + thisCategory + '" value="' + thisTitle + '" data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisTitle + '</p></div><div class="form-group"><p id="inputbody' + thisName + '' + thisCategory + '" value="' + thisBody + ' data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisBody + '</p></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-name="' + thisName + '">Delete Note</button></div></form>';
+      var html = '<form class="form-horizontal hideablenotes ' + thisName + '' + thisCategory + 'note" role="form" data-id="'+data.notes[data.notes.length - 1].id+'" id="'+data.notes[data.notes.length - 1].id+'NoteBlock"><div class="form-group"><p id="' + thisTitle + thisName + '' + thisCategory + '" value="' + thisTitle + '" data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisTitle + '</p></div><div class="form-group"><p id="inputbody' + thisName + '' + thisCategory + '" value="' + thisBody + ' data-category="' + thisCategory + '" data-name="' + thisName + '">' + thisBody + '</p></div><div class="btn-group"><button class="btn btn-default ' + thisName + '' + thisCategory + 'delete deletenote" type="button"  data-category="' + thisCategory + '" data-id="'+data.notes[data.notes.length - 1].id+'" data-name="' + thisName + '">Delete Note</button></div></form>';
       $(html).insertAfter(".newnote");
       // Also, remove the values entered in the input and textarea for note entry
     $("#titleinput" +thisName+ thisCategory).val("");
@@ -67,4 +67,34 @@ $(document).on("click", ".newsave", function() {
     });
 
  
+});
+
+
+// When you click the savenote button
+$(document).on("click", ".deletenote:not(.newdelete)", function() {
+  // Grab the id associated with the class from the submit button
+  var thisCategory = $(this).attr("data-category");
+  var thisName = $(this).attr("data-name");
+  var thisId = $(this).attr("data-id");
+  console.log("deleting " + thisId);
+
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+    method: "DELETE",
+    url: "/classNote/",
+    data: {
+      // Value taken from title input
+      _id: thisId,
+      name: thisName,
+      category: thisCategory
+    }
+  })
+    // With that done
+    .then(function(response) {
+      // Log the response
+      // Also, remove the values shown on page
+    
+    });
+
+ $('#'+thisId+'NoteBlock').remove();
 });

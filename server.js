@@ -286,6 +286,22 @@ var db = require("./models");
       renderPage("Classes", req, res);
     });
 //Delete
+    app.delete("/classNote/",function(req, res) {
+      db.ClassNote.findOneAndRemove(req.body.id)
+        .then(function(dbNote) {
+          //Find class matching Note
+          return db.Class.findOneAndUpdate({
+            name: req.body.name,
+            category: req.body.category
+          }, {
+            //pull note id
+            $pull: {notes: request.body.id}
+          }, { new: true });
+        })
+        .catch(function(err) {
+          res.json(err);
+        });
+    });
     
 
 //Unfinished Routes

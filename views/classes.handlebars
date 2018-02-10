@@ -5,12 +5,12 @@
                 {{> class-block}}
             {{/each}}
         </div>
-        </div>
-        <div class="col-sm-4">
-            <h2>Notes</h2>
-            {{> note-block blank}}
-            {{#each notes}}
-                {{> note-static-block}}
-            {{/each}}
-        </div>
     </div>
+    <div class="col-sm-4">
+        <h2>Notes</h2>
+        {{> newnote-block blank}}
+        {{#each notes}} 
+            {{> note-static-block}}
+        {{/each}}
+    </div>
+</div>
