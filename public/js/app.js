@@ -104,3 +104,10 @@ $(document).on("click", ".newdelete", function() {
   $('#inputtitlenew').val('');
   $('#inputtextnew').val('');
 });
+
+// When you click the deletenote button on new button
+$(document).on("click", ".panel-heading", function() {
+  thisLink = $(this + ' div div .panel-title').attr('href');
+  console.log(thisLink);
+  thisLink.collapse("toggle");
+});
