@@ -1,31 +1,32 @@
 {
   "name": "pathfinderscraper",
-  "version": "1.0.0",
-  "description": "Scraper for Pathfinder SRD",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "concurrently": "^3.5.1",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.6",
+    "morgan": "^1.9.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-markdown": "^3.2.1",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abruestle/PathfinderScraper.git"
+  "scripts": {
+    "server": "node server.js",
+    "client": "node scripts/start-client.js",
+    "start": "concurrently \"nodemon server.js\" \"npm run client\"",
+    "build": "node scripts/build.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "installDeps": "yarn && cd client && yarn"
   },
   "author": "Anna Bruestle",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/abruestle/PathfinderScraper/issues"
-  },
-  "homepage": "https://github.com/abruestle/PathfinderScraper#readme",
-  "dependencies": {
-    "axios": "^0.17.1",
-    "body-parser": "^1.18.2",
-    "cheerio": "^1.0.0-rc.2",
-    "express": "^4.16.2",
-    "express-handlebars": "^3.0.0",
-    "mongoose": "^5.0.3",
-    "morgan": "^1.9.0",
-    "path": "^0.12.7",
-    "request": "^2.83.0"
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
